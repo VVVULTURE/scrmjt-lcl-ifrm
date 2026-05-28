@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iframe Loader with Fullscreen</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+            background-color: #330000;
+            color: #ffdddd;
+            font-family: sans-serif;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        #iframeContainer {
+            flex-grow: 1;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+        }
+
+        #loadedIframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .fullscreen-overlay {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background-color: rgba(51, 0, 0, 0.7);
+            color: #ffdddd;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 10;
+            font-size: 1em;
+            border: none;
+        }
+
+        .fullscreen-overlay:hover {
+            background-color: rgba(68, 0, 0, 0.9);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="iframeContainer">
+            <iframe id="loadedIframe" src="https://example.vercel.app/" frameborder="0" allowfullscreen></iframe>
+            <button class="fullscreen-overlay" id="fullscreenToggle">Fullscreen</button>
+        </div>
+    </div>
+
+    <script>
+        const loadedIframe = document.getElementById('loadedIframe');
+        const iframeContainer = document.getElementById('iframeContainer');
+        const fullscreenToggle = document.getElementById('fullscreenToggle');
+        let isFullscreen = false;
+        let currentFullscreenElement = null;
+
+        fullscreenToggle.addEventListener('click', () => {
+            if (!isFullscreen) {
+                // Enter fullscreen
+                if (iframeContainer.requestFullscreen) {
+                    iframeContainer.requestFullscreen();
+                    currentFullscreenElement = iframeContainer;
+                } else if (iframeContainer.mozRequestFullScreen) {
+                    iframeContainer.mozRequestFullScreen();
+                    currentFullscreenElement = iframeContainer;
+                } else if (iframeContainer.webkitRequestFullscreen) {
+                    iframeContainer.webkitRequestFullscreen();
+                    currentFullscreenElement = iframeContainer;
+                } else if (iframeContainer.msRequestFullscreen) {
+                    iframeContainer.msRequestFullscreen();
+                    currentFullscreenElement = iframeContainer;
+                }
+                fullscreenToggle.textContent = 'Exit Fullscreen';
+            } else {
+                // Exit fullscreen
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+                fullscreenToggle.textContent = 'Fullscreen';
+                currentFullscreenElement = null;
+            }
+            isFullscreen = !isFullscreen;
+        });
+
+        document.addEventListener('fullscreenchange', () => {
+            isFullscreen = !!document.fullscreenElement;
+            fullscreenToggle.textContent = isFullscreen ? 'Exit Fullscreen' : 'Fullscreen';
+            currentFullscreenElement = document.fullscreenElement;
+        });
+
+        document.addEventListener('mozfullscreenchange', () => {
+            isFullscreen = !!document.mozFullScreenElement;
+            fullscreenToggle.textContent = isFullscreen ? 'Exit Fullscreen' : 'Fullscreen';
+            currentFullscreenElement = document.mozFullScreenElement;
+        });
+
+        document.addEventListener('webkitfullscreenchange', () => {
+            isFullscreen = !!document.webkitFullscreenElement;
+            fullscreenToggle.textContent = isFullscreen ? 'Exit Fullscreen' : 'Fullscreen';
+            currentFullscreenElement = document.webkitFullscreenElement;
+        });
+
+        document.addEventListener('msfullscreenchange', () => {
+            isFullscreen = !!document.msFullscreenElement;
+            fullscreenToggle.textContent = isFullscreen ? 'Exit Fullscreen' : 'Fullscreen';
+            currentFullscreenElement = document.msFullscreenElement;
+        });
+    </script>
+</body>
+</html>
